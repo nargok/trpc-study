@@ -1,17 +1,20 @@
 import { procedure, router } from "@/backend/trpc";
 import { z } from "zod";
 
+import { PokemonClient } from "pokenode-ts";
+
 export const appRouter = router({
-  hello: procedure
+  "get-pokemon-by-id": procedure
     .input(
       z.object({
-        text: z.string(),
+        id: z.number(),
       })
     )
-    .query(({ input }) => {
-      return {
-        greeting: `hello ${input?.text ?? "world"}`,
-      };
+    .query(async ({ input }) => {
+      const api = new PokemonClient();
+      const pokemon = api.getPokemonById(input.id);
+
+      return pokemon;
     }),
 });
 
